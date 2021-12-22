@@ -1,0 +1,12 @@
+learning modes:
+  - supervised learning
+  - unsupervised learning
+  - semi-supervised learning
+  - reinforcement learning
+  - active learning
+
+problem type:
+  - regression
+  - clustering
+  - classification
+
