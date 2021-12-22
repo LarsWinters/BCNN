@@ -15,5 +15,6 @@ if __name__ == '__main__':
     print("Test")
     print('Servus')
     print('test kathrin')
+    print_hi('test 2')
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
