@@ -1,19 +1,14 @@
 # This is a sample Python script.
 
-# Press Umschalt+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+#here are all imports necessary for the CNN
+import tensorflow as tf
 
+#model architecture
+def main():
+    hello = tf.constant("hello, Tensorflow!")
+    tf.print(hello)
+    print(hello)
+    print("Tensorflow Version: {}".format(tf.__version__))
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Strg+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-    print("Test")
-    print("test123")
-    print("test Kathrin")
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+if __name__ == "__main__":
+    main()
