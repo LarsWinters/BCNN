@@ -28,7 +28,8 @@ def train_files():
         for file in files:
             im = Image.open(file)
             train_img_size.append(im.size)
-    pd.Series(train_img_size).value_counts()
+    print('Train Image shapes:\n')
+    print(pd.Series(train_img_size).value_counts())
     return
 
 
@@ -48,15 +49,15 @@ def test_files():
         for file in files:
             im = Image.open(file)
             test_img_size.append(im.size)
-    pd.Series(test_img_size).value_counts()
+    print('Test Image shapes:\n')
+    print(pd.Series(test_img_size).value_counts())
     return
 
 
 # list prediction folder structure
 def pred_folders():
-    for folder in os.listdir(pred_path + 'seg_pred'):
-        files = glob.glob(pathname=pred_path + 'seg_pred//' + '*.jpg')
-        print(f'({folder}) folder has: {len(files)}')
+    files = glob.glob(pathname=pred_path + 'seg_pred//' + '*.jpg')
+    print(f'Prediction folder has: {len(files)}')
     return
 
 
@@ -67,7 +68,8 @@ def pred_files():
     for file in files:
         im = Image.open(file)
         pred_img_size.append(im.size)
-    pd.Series(pred_img_size).value_counts()
+    print('Prediction Image shapes:\n')
+    print(pd.Series(pred_img_size).value_counts())
     return
 
 
@@ -76,12 +78,17 @@ def pred_files():
 def main():
     print('Train Dataset:\n')
     train_folders()
+    print()
     train_files()
+    print()
     print('Test Dataset:\n')
     test_folders()
+    print()
     test_files()
+    print()
     print('Prediction Dataset:\n')
     pred_folders()
+    print()
     pred_files()
 
 
