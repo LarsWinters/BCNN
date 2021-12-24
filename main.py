@@ -5,6 +5,8 @@ import os
 import glob
 from PIL import Image
 import pandas as pd
+import time
+
 
 # define paths --> data should be in github repo --> need to be changed
 train_path = 'C:/Users/Lucas/Desktop/Data_BIS_CNN/'
@@ -93,4 +95,7 @@ def main():
 
 
 if __name__ == '__main__':
+    start_time = time.time()
     main()
+    print('\nExecution Time:\n')
+    print("--- %s seconds ---" % (time.time() - start_time))
