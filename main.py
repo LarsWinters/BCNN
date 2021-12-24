@@ -31,7 +31,7 @@ def train_files():
             im = Image.open(file)
             train_img_size.append(im.size)
     print('Train Image shapes:\n')
-    print(pd.Series(train_img_size).value_counts())
+    print(pd.Series(train_img_size).value_counts(), '\n')
     return
 
 
@@ -52,7 +52,7 @@ def test_files():
             im = Image.open(file)
             test_img_size.append(im.size)
     print('Test Image shapes:\n')
-    print(pd.Series(test_img_size).value_counts())
+    print(pd.Series(test_img_size).value_counts(), '\n')
     return
 
 
@@ -71,7 +71,7 @@ def pred_files():
         im = Image.open(file)
         pred_img_size.append(im.size)
     print('Prediction Image shapes:\n')
-    print(pd.Series(pred_img_size).value_counts())
+    print(pd.Series(pred_img_size).value_counts(), '\n')
     return
 
 
@@ -82,12 +82,10 @@ def main():
     train_folders()
     print()
     train_files()
-    print()
     print('Test Dataset:\n')
     test_folders()
     print()
     test_files()
-    print()
     print('Prediction Dataset:\n')
     pred_folders()
     print()
@@ -97,5 +95,5 @@ def main():
 if __name__ == '__main__':
     start_time = time.time()
     main()
-    print('\nExecution Time:\n')
+    print('Execution Time:\n')
     print("--- %s seconds ---" % (time.time() - start_time))
