@@ -4,8 +4,9 @@ from tensorflow.keras.callbacks import TensorBoard
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, Flatten
 from tensorflow.keras.layers import Conv2D, MaxPooling2D
-from tensorflow.keras import backend as K
+# from tensorflow.keras import backend as K
 from tensorflow.keras.layers import BatchNormalization
+# from tensorflow import keras
 import os
 import glob
 from PIL import Image
@@ -13,6 +14,7 @@ import pandas as pd
 import time
 import cv2
 import numpy as np
+from datetime import datetime
 
 # Define Classes for Image Classification Model
 classes = {'buildings': 0, 'forest': 1, 'glacier': 2, 'mountain': 3, 'sea': 4, 'street': 5}
@@ -141,7 +143,7 @@ def data_array_shape(x_train, y_train, x_test, y_test, x_pred):
     print(f'x_test array shape is {x_test.shape}')
     print(f'y_test array shape is {y_test.shape}')
     print(f'x_pred array shape is {x_pred.shape}')
-    return
+    return x_train, y_train, x_test, y_test, x_pred
 
 
 # convolutional neural network architecture
@@ -151,23 +153,22 @@ def cnn_architecture():
     # input shape of images
     set_input_shape = (img_size, img_size, 3)
     set_dropout = 0.3
-    # hyperparameters c1
+    # model settings c1
     set_filters_c1 = 128
     set_kernel_c1 = (5, 5)
     set_actfunc_c1 = 'elu'
     set_poolsize_c1 = (2, 2)
-    # hyperparameters c2
+    # model settings c2
     set_filters_c2 = 256
     set_kernel_c2 = (3, 3)
     set_actfunc_c2 = 'elu'
     set_poolsize_c2 = (2, 2)
-    # hyperparameters prediction block
+    # model settings prediction block
     set_units_d1 = 64
     set_units_d3 = 32
     set_units_d4 = 16
     set_units_d5 = 6
     set_actfunc_d1 = 'elu'
-    set_actfunc_d2 = 'elu'
     set_actfunc_d3 = 'elu'
     set_actfunc_d4 = 'elu'
     set_actfunc_d5 = 'softmax'
@@ -202,6 +203,30 @@ def model_compilation(model):
     model.compile(loss='sparse_categorical_crossentropy',
                   optimizer='Adam',
                   metrics=['accuracy'])
+    return model
+
+
+def create_tensorboard():
+    logdir = "logs/scalars/"
+    my_tensorboard = TensorBoard(log_dir=logdir,
+                                 histogram_freq=0,
+                                 write_graph=True,
+                                 write_images=True)
+    return my_tensorboard
+
+
+def model_training(model, my_tensorboard, x_train, y_train, x_test, y_test):
+    # hyperparameters
+    set_batch_size = 32  # only divisor of 14034 (training sample size) without remainders
+    set_epochs = 10
+    model_history = model.fit(x_train, y_train,
+                              batch_size = set_batch_size,
+                              callbacks=[my_tensorboard],
+                              epochs=set_epochs,
+                              verbose=1,
+                              validation_data=(x_test, y_test))
+    return model_history
+
 
 def main():
     """
@@ -236,10 +261,12 @@ def main():
         print('Successfully created x_pred!')
     except:
         print('Setup x_pred failed!')
-    data_array_shape(x_train, y_train, x_test, y_test, x_pred)
+    x_train, y_train, x_test, y_test, x_pred = data_array_shape(x_train, y_train, x_test, y_test, x_pred)
     model = cnn_architecture()
     model.summary()
     model_compilation(model)
+    my_tensorboard = create_tensorboard()
+    model_history = model_training(model, my_tensorboard, x_train, y_train, x_test, y_test)
 
 if __name__ == '__main__':
     start_time = time.time()
