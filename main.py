@@ -16,6 +16,7 @@ import pandas as pd
 import time
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
 #from datetime import datetime
 
 # Define Classes for Image Classification Model
@@ -229,11 +230,21 @@ def model_training(model, my_tensorboard, x_train, y_train, x_test, y_test):
                               epochs=set_epochs,
                               verbose=1,
                               validation_data=(x_test, y_test))
+    pd.DataFrame(model_history.history).plot()
+    plt.ylabel('Value')
+    plt.xlabel('Epochs')
     return model_history
 
 def get_GPU_CPU_details():
     print("GPU vorhanden? ", tf.test.is_gpu_available())
     print("Devices: ", tf.config.experimental.list_physical_devices())
+    return
+
+
+def model_evaluation(model_history):
+    score = model.evaluate(x_test, y_test)
+    print('Test Loss: ', score[0])
+    print('Test Accuracy ', score[1])
     return
 
 def main():
@@ -285,7 +296,7 @@ def main():
     model_compilation(model)
     my_tensorboard = create_tensorboard()
     model_history = model_training(model, my_tensorboard, x_train, y_train, x_test, y_test)
-
+    model_evaluation(model_history)
 if __name__ == '__main__':
     start_time = time.time()
     main()
