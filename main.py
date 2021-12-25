@@ -162,8 +162,7 @@ def cnn_architecture():
     set_actfunc_c2 = 'elu'
     set_poolsize_c2 = (2, 2)
     # hyperparameters prediction block
-    set_units_d1 = 128
-    set_units_d2 = 64
+    set_units_d1 = 64
     set_units_d3 = 32
     set_units_d4 = 16
     set_units_d5 = 6
@@ -191,7 +190,6 @@ def cnn_architecture():
     model.add(Flatten())
     model.add(Dense(set_units_d1, set_actfunc_d1, name='features'))
     model.add(BatchNormalization())
-    model.add(Dense(set_units_d2, set_actfunc_d2))
     model.add(Dense(set_units_d3, set_actfunc_d3))
     model.add(Dense(set_units_d4, set_actfunc_d4))
     model.add(Dense(set_units_d5, set_actfunc_d5))
