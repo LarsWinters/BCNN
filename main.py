@@ -193,9 +193,15 @@ def cnn_architecture():
     model.add(Dense(set_units_d3, set_actfunc_d3))
     model.add(Dense(set_units_d4, set_actfunc_d4))
     model.add(Dense(set_units_d5, set_actfunc_d5))
-    model.summary()
-    return
+    return model
 
+
+# compile model with loss function and optimization
+def model_compilation(model):
+    # sparse categorical cross entropy because of integer classes [0,1,2,3,4,5]
+    model.compile(loss='sparse_categorical_crossentropy',
+                  optimizer='Adam',
+                  metrics=['accuracy'])
 
 def main():
     """
@@ -231,8 +237,9 @@ def main():
     except:
         print('Setup x_pred failed!')
     data_array_shape(x_train, y_train, x_test, y_test, x_pred)
-    cnn_architecture()
-
+    model = cnn_architecture()
+    model.summary()
+    model_compilation(model)
 
 if __name__ == '__main__':
     start_time = time.time()
