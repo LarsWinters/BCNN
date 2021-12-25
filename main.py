@@ -7,6 +7,7 @@ from PIL import Image
 import pandas as pd
 import time
 import cv2
+import numpy as np
 
 #Define Classes for Image Classification Model
 classes = {'buildings':0 ,'forest':1,'glacier':2,'mountain':3,'sea':4,'street':5}
@@ -119,6 +120,22 @@ def setup_pred():
         x_pred.append(list(img_array))
     return x_pred
 
+
+# print array shape of prepared data
+def data_array_shape(x_train, y_train, x_test, y_test, x_pred):
+    x_train = np.array(x_train)
+    y_train = np.array(y_train)
+    x_test = np.array(x_test)
+    y_test = np.array(y_test)
+    x_pred = np.array(x_pred)
+
+    print(f'x_train array shape is {x_train.shape}')
+    print(f'y_train array shape is {y_train.shape}')
+    print(f'x_test array shape is {x_test.shape}')
+    print(f'y_test array shape is {y_test.shape}')
+    print(f'x_pred array shape is {x_pred.shape}')
+    return
+
 def main():
     print('Train Dataset:\n')
     train_folders()
@@ -133,22 +150,23 @@ def main():
     print()
     pred_files()
     print('----------------------Setup x_train, y_train, x_test, y_test, x_pred, '
-          'y_pred--------------------------------------')
+          'y_pred--------------------------------------\n')
     try:
-        setup_train()
+        x_train, y_train = setup_train()
         print('Successfully created x_train, y_train!')
     except:
         print('Setup x_train, y_train failed!')
     try:
-        setup_test()
+        x_test, y_test = setup_test()
         print('Successfully created x_test, y_test!')
     except:
         print('Setup x_test, y_test failed!')
     try:
-        setup_pred()
+        x_pred = setup_pred()
         print('Successfully created x_pred!')
     except:
-        print('Setup x_pred!')
+        print('Setup x_pred failed!')
+    data_array_shape(x_train, y_train, x_test, y_test, x_pred)
 
 if __name__ == '__main__':
     start_time = time.time()
