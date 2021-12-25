@@ -1,20 +1,22 @@
 # CNN submitted by Nicola Schreyer, Kathrin Heldauer, Jannik Holz, Niklas Grimm, Paul Baßler, Lucas Winkler
 # here are all imports necessary for the CNN
+import os
+#os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 from tensorflow.keras.callbacks import TensorBoard
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, Flatten
 from tensorflow.keras.layers import Conv2D, MaxPooling2D
-# from tensorflow.keras import backend as K
+from tensorflow.python.keras import backend as K
+K.clear_session()
 from tensorflow.keras.layers import BatchNormalization
-# from tensorflow import keras
-import os
+import tensorflow as tf
 import glob
 from PIL import Image
 import pandas as pd
 import time
 import cv2
 import numpy as np
-from datetime import datetime
+#from datetime import datetime
 
 # Define Classes for Image Classification Model
 classes = {'buildings': 0, 'forest': 1, 'glacier': 2, 'mountain': 3, 'sea': 4, 'street': 5}
@@ -203,6 +205,7 @@ def model_compilation(model):
     model.compile(loss='sparse_categorical_crossentropy',
                   optimizer='Adam',
                   metrics=['accuracy'])
+    print('Model compilation sucessful')
     return model
 
 
@@ -212,12 +215,13 @@ def create_tensorboard():
                                  histogram_freq=0,
                                  write_graph=True,
                                  write_images=True)
+    print('Tensorboard creation sucessful')
     return my_tensorboard
 
 
 def model_training(model, my_tensorboard, x_train, y_train, x_test, y_test):
     # hyperparameters
-    set_batch_size = 32  # only divisor of 14034 (training sample size) without remainders
+    set_batch_size = 6  # only divisor of 14034 (training sample size) without remainders
     set_epochs = 10
     model_history = model.fit(x_train, y_train,
                               batch_size = set_batch_size,
@@ -227,8 +231,22 @@ def model_training(model, my_tensorboard, x_train, y_train, x_test, y_test):
                               validation_data=(x_test, y_test))
     return model_history
 
+def get_GPU_CPU_details():
+    print("GPU vorhanden? ", tf.test.is_gpu_available())
+    print("Devices: ", tf.config.experimental.list_physical_devices())
+    return
 
 def main():
+    print(tf.__version__)
+    tf.debugging.set_log_device_placement(False) # shows operations of used device while running
+    """
+    get_GPU_CPU_details()
+    with tf.device('/device:GPU:0'):
+        c = tf.constant([[0.0, 1.0, 2],[3,0,1]])
+        d = tf.constant([[1.0,2.0],[4,6],[1,2]])
+        res = tf.matmul(c,d)
+        print(res)
+    """
     """
     print('Train Dataset:\n')
     train_folders()
