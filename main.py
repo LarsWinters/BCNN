@@ -15,7 +15,7 @@ import time
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-K.clear_session()
+#K.clear_session()
 #os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 # Define Classes for Image Classification Model
 classes = {'buildings': 0, 'forest': 1, 'glacier': 2, 'mountain': 3, 'sea': 4, 'street': 5}
@@ -201,7 +201,7 @@ def model_compilation(model):
     model.compile(loss='sparse_categorical_crossentropy',
                   optimizer='Adam',
                   metrics=['accuracy'])
-    print('Model compilation sucessful')
+    print('Model compilation successful')
     return model
 
 
@@ -230,12 +230,6 @@ def model_training(model, my_tensorboard, x_train, y_train, x_test, y_test):
     plt.xlabel('Epochs')
     return model_history
 
-def get_GPU_CPU_details():
-    print("GPU vorhanden? ", tf.test.is_gpu_available())
-    print("Devices: ", tf.config.experimental.list_physical_devices())
-    return
-
-
 def model_evaluation(model_history):
     score = model_history.evaluate(x_test, y_test)
     print('Test Loss: ', score[0])
@@ -245,13 +239,7 @@ def model_evaluation(model_history):
 
 def main():
     print(tf.__version__)
-    tf.debugging.set_log_device_placement(False) # shows operations of used device while running
-    get_GPU_CPU_details()
-    """with tf.device('/device:GPU:0'):
-        c = tf.constant([[0.0, 1.0, 2],[3,0,1]])
-        d = tf.constant([[1.0,2.0],[4,6],[1,2]])
-        res = tf.matmul(c,d)
-        print(res)
+    tf.debugging.set_log_device_placement(True) # shows operations of used device while running
     """
     print('Train Dataset:\n')
     train_folders()
@@ -265,7 +253,7 @@ def main():
     pred_folders()
     print()
     pred_files()
-
+    """
     global x_train, y_train, x_test, y_test, x_pred
     print('----------------------Setup x_train, y_train, x_test, y_test, x_pred'
           '--------------------------------------\n')
