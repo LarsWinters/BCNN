@@ -16,7 +16,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 K.clear_session()
-os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+#os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 # Define Classes for Image Classification Model
 classes = {'buildings': 0, 'forest': 1, 'glacier': 2, 'mountain': 3, 'sea': 4, 'street': 5}
 
@@ -246,14 +246,12 @@ def model_evaluation(model_history):
 def main():
     print(tf.__version__)
     tf.debugging.set_log_device_placement(False) # shows operations of used device while running
-    """
     get_GPU_CPU_details()
     with tf.device('/device:GPU:0'):
         c = tf.constant([[0.0, 1.0, 2],[3,0,1]])
         d = tf.constant([[1.0,2.0],[4,6],[1,2]])
         res = tf.matmul(c,d)
         print(res)
-    """
     """
     print('Train Dataset:\n')
     train_folders()
@@ -267,6 +265,7 @@ def main():
     pred_folders()
     print()
     pred_files()
+    """
     """
     global x_train, y_train, x_test, y_test, x_pred
     print('----------------------Setup x_train, y_train, x_test, y_test, x_pred'
@@ -293,7 +292,7 @@ def main():
     my_tensorboard = create_tensorboard()
     model_history = model_training(model, my_tensorboard, x_train, y_train, x_test, y_test)
     model_evaluation(model_history)
-
+    """
 
 if __name__ == '__main__':
     start_time = time.time()
