@@ -3,7 +3,7 @@
 import os
 from tensorflow.keras.callbacks import TensorBoard
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Flatten
+from tensorflow.keras.layers import Dense, Flatten, Dropout
 from tensorflow.keras.layers import Conv2D, MaxPooling2D
 from tensorflow.keras.layers import BatchNormalization
 import tensorflow as tf
@@ -120,14 +120,14 @@ def cnn_architecture():
     model = Sequential()
     # input shape of images
     set_input_shape = (img_size, img_size, 3)
-    #set_dropout = 0.3
+    set_dropout = 0.3
     # model settings c1
-    set_filters_c1 = 128
+    set_filters_c1 = 64
     set_kernel_c1 = (3, 3)
     set_actfunc_c1 = 'elu'
     set_poolsize_c1 = (2, 2)
     # model settings c2
-    set_filters_c2 = 256
+    set_filters_c2 = 128
     set_kernel_c2 = (3, 3)
     set_actfunc_c2 = 'elu'
     set_poolsize_c2 = (2, 2)
@@ -152,8 +152,8 @@ def cnn_architecture():
     model.add(Conv2D(set_filters_c2, kernel_size=set_kernel_c2,
                      activation=set_actfunc_c2))
     model.add(MaxPooling2D(set_poolsize_c2))
-    # model.add(Dropout(set_dropout)
-    model.add(BatchNormalization())
+    model.add(Dropout(set_dropout))
+    #model.add(BatchNormalization())
 
     # flatten
     model.add(Flatten())
@@ -200,7 +200,7 @@ def model_training(model, my_tensorboard, x_train, y_train, x_test, y_test):
     plt.xlabel('Epochs')
     return model_history
 
-def model_evaluation(model):
+def model_evaluation(model, x_test, y_test):
     score = model.evaluate(x_test, y_test)
     print('Test Loss: ', score[0])
     print('Test Accuracy ', score[1])
@@ -255,7 +255,7 @@ def main():
     model = model_compilation(model)
     my_tensorboard = create_tensorboard()
     model_history = model_training(model, my_tensorboard, x_train, y_train, x_test, y_test)
-    model_evaluation(model)
+    model_evaluation(model, x_test, y_test)
 
 def test_gpu():
     print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
