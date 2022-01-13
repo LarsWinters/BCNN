@@ -43,43 +43,21 @@ def folders(fname):
             print(f'({folder}) folder has: {len(files)}')
     return
 
-# list train image shapes
-def train_files():
-    train_img_size = []
-    for folder in os.listdir(path + 'seg_train'):
-        files = glob.glob(pathname=path + 'seg_train//' + folder + '/*.jpg')
+def files(fname):
+    act_img_size = []
+    if fname=='seg_pred':
+        files = glob.glob(pathname=str(path + fname+'/*.jpg'))
         for file in files:
             im = Image.open(file)
-            train_img_size.append(im.size)
-    print('Train Image shapes:\n')
-    train_series = pd.Series(train_img_size).value_counts()
-    print(train_series, '\n')
-    return
-
-# list test image shapes
-def test_files():
-    test_img_size = []
-    for folder in os.listdir(path + 'seg_test'):
-        files = glob.glob(pathname=path + 'seg_test//' + folder + '/*.jpg')
-        for file in files:
-            im = Image.open(file)
-            test_img_size.append(im.size)
-    print('Test Image shapes:\n')
-    test_series = pd.Series(test_img_size, name='Height x Width').value_counts()
-    print(test_series, '\n')
-    return
-
-# list pred image shapes
-def pred_files():
-    pred_img_size = []
-    files = glob.glob(pathname=str(path + 'seg_pred/*.jpg'))
-    for file in files:
-        im = Image.open(file)
-        pred_img_size.append(im.size)
-    print('Prediction Image shapes:\n')
-    pred_series = pd.Series(pred_img_size).value_counts()
-    print(pred_series, '\n')
-    return
+            act_img_size.append(im.size)
+    else:
+        for folder in os.listdir(path + fname):
+            files = glob.glob(pathname=path + fname + '//' + folder + '/*.jpg')
+            for file in files:
+                im = Image.open(file)
+                act_img_size.append(im.size)
+    series = pd.Series(act_img_size, name='Height x Width').value_counts()
+    return series
 
 # setup x_train, y_train
 def setup_train():
@@ -236,15 +214,23 @@ def main():
     print('Train Dataset:\n')
     folders('seg_train')
     print()
-    train_files()
+    print('Train Image shapes:\n')
+    train_series = files('seg_train')
+    print(train_series, '\n')
+
     print('Test Dataset:\n')
     folders('seg_test')
     print()
-    test_files()
+    print('Test Image shapes:\n')
+    test_series = files('seg_test')
+    print(test_series, '\n')
+
     print('Prediction Dataset:\n')
     folders('seg_pred')
+    print('Prediction Image shapes:\n')
+    pred_series = files('seg_pred')
+    print(pred_series, '\n')
     print()
-    pred_files()
 
     print('----------------------Setup x_train, y_train, x_test, y_test, x_pred'
           '--------------------------------------\n')
