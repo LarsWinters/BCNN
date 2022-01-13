@@ -5,7 +5,6 @@ from tensorflow.keras.callbacks import TensorBoard
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Flatten
 from tensorflow.keras.layers import Conv2D, MaxPooling2D
-from tensorflow.python.keras import backend as K
 from tensorflow.keras.layers import BatchNormalization
 import tensorflow as tf
 import glob
@@ -16,7 +15,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 #K.clear_session()
-#os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 # Define Classes for Image Classification Model
 classes = {'buildings': 0, 'forest': 1, 'glacier': 2, 'mountain': 3, 'sea': 4, 'street': 5}
 
@@ -153,7 +152,7 @@ def cnn_architecture():
     #set_dropout = 0.3
     # model settings c1
     set_filters_c1 = 128
-    set_kernel_c1 = (5, 5)
+    set_kernel_c1 = (3, 3)
     set_actfunc_c1 = 'elu'
     set_poolsize_c1 = (2, 2)
     # model settings c2
@@ -217,8 +216,8 @@ def create_tensorboard():
 
 def model_training(model, my_tensorboard, x_train, y_train, x_test, y_test):
     # hyperparameters
-    set_batch_size = 6  # only divisor of 14034 (training sample size) without remainders
-    set_epochs = 10
+    set_batch_size = 100  # only divisor of 14034 (training sample size) without remainders
+    set_epochs = 5
     model_history = model.fit(x_train, y_train,
                               batch_size = set_batch_size,
                               callbacks=[my_tensorboard],
@@ -230,8 +229,8 @@ def model_training(model, my_tensorboard, x_train, y_train, x_test, y_test):
     plt.xlabel('Epochs')
     return model_history
 
-def model_evaluation(model_history):
-    score = model_history.evaluate(x_test, y_test)
+def model_evaluation(model):
+    score = model.evaluate(x_test, y_test)
     print('Test Loss: ', score[0])
     print('Test Accuracy ', score[1])
     return
@@ -239,7 +238,7 @@ def model_evaluation(model_history):
 
 def main():
     print(tf.__version__)
-    tf.debugging.set_log_device_placement(True) # shows operations of used device while running
+    tf.debugging.set_log_device_placement(False) # shows operations of used device while running
     """
     print('Train Dataset:\n')
     train_folders()
@@ -275,13 +274,18 @@ def main():
     x_train, y_train, x_test, y_test, x_pred = data_array_shape(x_train, y_train, x_test, y_test, x_pred)
     model = cnn_architecture()
     model.summary()
-    model_compilation(model)
+    model = model_compilation(model)
     my_tensorboard = create_tensorboard()
     model_history = model_training(model, my_tensorboard, x_train, y_train, x_test, y_test)
-    model_evaluation(model_history)
+    model_evaluation(model)
+
+def test_gpu():
+    print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+    return
 
 if __name__ == '__main__':
     start_time = time.time()
+    #test_gpu()
     main()
     print('Execution Time:\n')
     print("--- %s seconds ---" % (time.time() - start_time))
