@@ -8,13 +8,12 @@ from tensorflow.keras.layers import Conv2D, MaxPooling2D
 from tensorflow.keras.layers import BatchNormalization
 import tensorflow as tf
 import glob
-from PIL import Image
 import pandas as pd
 import time
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-
+from data_structure import folders, files
 
 # ___________________________________________________global variables__________________________________________
 global x_train, y_train, x_test, y_test, x_pred
@@ -28,36 +27,6 @@ classes = {'buildings': 0, 'forest': 1, 'glacier': 2, 'mountain': 3, 'sea': 4, '
 # ___________________________________________________activate/deactivate GPU usage ____________________________
 #K.clear_session()
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-
-
-# list train folder structure
-def folders(fname):
-    if fname=='seg_pred':
-        files = glob.glob(pathname=path + 'seg_pred//' + '*.jpg')
-        print(f'Prediction folder has: {len(files)}')
-    else:
-        for folder in os.listdir(path+fname):
-            #print(folder)
-            files = glob.glob(pathname=path+fname+'//'+folder+'/*.jpg')
-            #print(files)
-            print(f'({folder}) folder has: {len(files)}')
-    return
-
-def files(fname):
-    act_img_size = []
-    if fname=='seg_pred':
-        files = glob.glob(pathname=str(path + fname+'/*.jpg'))
-        for file in files:
-            im = Image.open(file)
-            act_img_size.append(im.size)
-    else:
-        for folder in os.listdir(path + fname):
-            files = glob.glob(pathname=path + fname + '//' + folder + '/*.jpg')
-            for file in files:
-                im = Image.open(file)
-                act_img_size.append(im.size)
-    series = pd.Series(act_img_size, name='Height x Width').value_counts()
-    return series
 
 # setup x_train, y_train
 def setup_train():
@@ -181,14 +150,14 @@ def create_tensorboard():
                                  histogram_freq=0,
                                  write_graph=True,
                                  write_images=True)
-    print('Tensorboard creation sucessful')
+    print('Tensorboard creation successful')
     return my_tensorboard
 
 
 def model_training(model, my_tensorboard, x_train, y_train, x_test, y_test):
     # hyperparameters
     set_batch_size = 100  # only divisor of 14034 (training sample size) without remainders
-    set_epochs = 5
+    set_epochs = 1
     model_history = model.fit(x_train, y_train,
                               batch_size = set_batch_size,
                               callbacks=[my_tensorboard],
@@ -212,23 +181,23 @@ def main():
     tf.debugging.set_log_device_placement(False) # shows operations of used device while running
 
     print('Train Dataset:\n')
-    folders('seg_train')
+    folders(path,'seg_train')
     print()
     print('Train Image shapes:\n')
-    train_series = files('seg_train')
+    train_series = files(path,'seg_train')
     print(train_series, '\n')
 
     print('Test Dataset:\n')
-    folders('seg_test')
+    folders(path,'seg_test')
     print()
     print('Test Image shapes:\n')
-    test_series = files('seg_test')
+    test_series = files(path,'seg_test')
     print(test_series, '\n')
 
     print('Prediction Dataset:\n')
-    folders('seg_pred')
+    folders(path,'seg_pred')
     print('Prediction Image shapes:\n')
-    pred_series = files('seg_pred')
+    pred_series = files(path,'seg_pred')
     print(pred_series, '\n')
     print()
 
