@@ -14,24 +14,34 @@ import time
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-#K.clear_session()
-os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+
+
+# ___________________________________________________global variables__________________________________________
+global x_train, y_train, x_test, y_test, x_pred
+# define image size
+img_size = 150
+# define path
+path = 'C:/Users/c4371094/Desktop/Lucas_CNN/archive/'
 # Define Classes for Image Classification Model
 classes = {'buildings': 0, 'forest': 1, 'glacier': 2, 'mountain': 3, 'sea': 4, 'street': 5}
 
-# define image size
-img_size = 150
+# ___________________________________________________activate/deactivate GPU usage ____________________________
+#K.clear_session()
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
-# define path
-path = 'C:/Users/c4371094/Desktop/Lucas_CNN/archive/'
 
 # list train folder structure
-def train_folders():
-    for folder in os.listdir(path + 'seg_train'):
-        files = glob.glob(pathname=path + 'seg_train//' + folder + '/*.jpg')  # * = .glob module wildcard
-        print(f'({folder}) folder has: {len(files)}')
+def folders(fname):
+    if fname=='seg_pred':
+        files = glob.glob(pathname=path + 'seg_pred//' + '*.jpg')
+        print(f'Prediction folder has: {len(files)}')
+    else:
+        for folder in os.listdir(path+fname):
+            #print(folder)
+            files = glob.glob(pathname=path+fname+'//'+folder+'/*.jpg')
+            #print(files)
+            print(f'({folder}) folder has: {len(files)}')
     return
-
 
 # list train image shapes
 def train_files():
@@ -46,15 +56,6 @@ def train_files():
     print(train_series, '\n')
     return
 
-
-# list test folder structure
-def test_folders():
-    for folder in os.listdir(path + 'seg_test'):
-        files = glob.glob(pathname=path + 'seg_test//' + folder + '/*.jpg')
-        print(f'({folder}) folder has: {len(files)}')
-    return
-
-
 # list test image shapes
 def test_files():
     test_img_size = []
@@ -67,14 +68,6 @@ def test_files():
     test_series = pd.Series(test_img_size, name='Height x Width').value_counts()
     print(test_series, '\n')
     return
-
-
-# list prediction folder structure
-def pred_folders():
-    files = glob.glob(pathname=path + 'seg_pred//' + '*.jpg')
-    print(f'Prediction folder has: {len(files)}')
-    return
-
 
 # list pred image shapes
 def pred_files():
@@ -239,21 +232,20 @@ def model_evaluation(model):
 def main():
     print(tf.__version__)
     tf.debugging.set_log_device_placement(False) # shows operations of used device while running
-    """
+
     print('Train Dataset:\n')
-    train_folders()
+    folders('seg_train')
     print()
     train_files()
     print('Test Dataset:\n')
-    test_folders()
+    folders('seg_test')
     print()
     test_files()
     print('Prediction Dataset:\n')
-    pred_folders()
+    folders('seg_pred')
     print()
     pred_files()
-    """
-    global x_train, y_train, x_test, y_test, x_pred
+
     print('----------------------Setup x_train, y_train, x_test, y_test, x_pred'
           '--------------------------------------\n')
     try:
