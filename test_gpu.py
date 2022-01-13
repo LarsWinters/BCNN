@@ -18,5 +18,6 @@ def test_gpu():
         print(res)
     return
 
-#if __name__ == '__main__':
-    test_gpu()
+def output_num_gpu():
+    print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+    return

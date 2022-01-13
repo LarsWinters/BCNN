@@ -25,10 +25,10 @@ path = 'C:/Users/c4371094/Desktop/Lucas_CNN/archive/'
 classes = {'buildings': 0, 'forest': 1, 'glacier': 2, 'mountain': 3, 'sea': 4, 'street': 5}
 
 # ___________________________________________________activate/deactivate GPU usage ____________________________
-#K.clear_session()
+# K.clear_session()
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
-# setup x_train, y_train
+# _____________________________________________________setup x_train, y_train_________________________________
 def setup_train():
     x_train = []
     y_train = []
@@ -42,7 +42,8 @@ def setup_train():
     return x_train, y_train
 
 
-# setup x_test, y_test
+# _____________________________________________________setup x_test, y_test_________________________________
+
 def setup_test():
     x_test = []
     y_test = []
@@ -56,7 +57,7 @@ def setup_test():
     return x_test, y_test
 
 
-# setup x_pred
+# _____________________________________________________setup x_pred___________________________________________
 def setup_pred():
     x_pred = []
     files = glob.glob(pathname=path + 'seg_pred//' + '*.jpg')
@@ -122,7 +123,7 @@ def cnn_architecture():
                      activation=set_actfunc_c2))
     model.add(MaxPooling2D(set_poolsize_c2))
     model.add(Dropout(set_dropout))
-    #model.add(BatchNormalization())
+    # model.add(BatchNormalization())
 
     # flatten
     model.add(Flatten())
@@ -159,7 +160,7 @@ def model_training(model, my_tensorboard, x_train, y_train, x_test, y_test):
     set_batch_size = 100  # only divisor of 14034 (training sample size) without remainders
     set_epochs = 1
     model_history = model.fit(x_train, y_train,
-                              batch_size = set_batch_size,
+                              batch_size=set_batch_size,
                               callbacks=[my_tensorboard],
                               epochs=set_epochs,
                               verbose=1,
@@ -168,6 +169,7 @@ def model_training(model, my_tensorboard, x_train, y_train, x_test, y_test):
     plt.ylabel('Value')
     plt.xlabel('Epochs')
     return model_history
+
 
 def model_evaluation(model, x_test, y_test):
     score = model.evaluate(x_test, y_test)
@@ -178,26 +180,26 @@ def model_evaluation(model, x_test, y_test):
 
 def main():
     print(tf.__version__)
-    tf.debugging.set_log_device_placement(False) # shows operations of used device while running
+    tf.debugging.set_log_device_placement(False)  # shows operations of used device while running
 
     print('Train Dataset:\n')
-    folders(path,'seg_train')
+    folders(path, 'seg_train')
     print()
     print('Train Image shapes:\n')
-    train_series = files(path,'seg_train')
+    train_series = files(path, 'seg_train')
     print(train_series, '\n')
 
     print('Test Dataset:\n')
-    folders(path,'seg_test')
+    folders(path, 'seg_test')
     print()
     print('Test Image shapes:\n')
-    test_series = files(path,'seg_test')
+    test_series = files(path, 'seg_test')
     print(test_series, '\n')
 
     print('Prediction Dataset:\n')
-    folders(path,'seg_pred')
+    folders(path, 'seg_pred')
     print('Prediction Image shapes:\n')
-    pred_series = files(path,'seg_pred')
+    pred_series = files(path, 'seg_pred')
     print(pred_series, '\n')
     print()
 
@@ -226,13 +228,9 @@ def main():
     model_history = model_training(model, my_tensorboard, x_train, y_train, x_test, y_test)
     model_evaluation(model, x_test, y_test)
 
-def test_gpu():
-    print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
-    return
 
 if __name__ == '__main__':
     start_time = time.time()
-    #test_gpu()
     main()
     print('Execution Time:\n')
     print("--- %s seconds ---" % (time.time() - start_time))
