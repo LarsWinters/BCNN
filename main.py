@@ -90,14 +90,14 @@ def cnn_architecture():
     model = Sequential()
     # input shape of images
     set_input_shape = (img_size, img_size, 3)
-    set_dropout = 0.3
+    set_dropout = 0.1
     # model settings c1
-    set_filters_c1 = 64
+    set_filters_c1 = 128
     set_kernel_c1 = (3, 3)
     set_actfunc_c1 = 'elu'
     set_poolsize_c1 = (2, 2)
     # model settings c2
-    set_filters_c2 = 128
+    set_filters_c2 = 256
     set_kernel_c2 = (3, 3)
     set_actfunc_c2 = 'elu'
     set_poolsize_c2 = (2, 2)
@@ -158,16 +158,19 @@ def create_tensorboard():
 def model_training(model, my_tensorboard, x_train, y_train, x_test, y_test):
     # hyperparameters
     set_batch_size = 100  # only divisor of 14034 (training sample size) without remainders
-    set_epochs = 1
+    set_epochs = 50
     model_history = model.fit(x_train, y_train,
                               batch_size=set_batch_size,
                               callbacks=[my_tensorboard],
                               epochs=set_epochs,
                               verbose=1,
                               validation_data=(x_test, y_test))
+    """
     pd.DataFrame(model_history.history).plot()
     plt.ylabel('Value')
     plt.xlabel('Epochs')
+    plt.show()
+    """
     return model_history
 
 
@@ -175,6 +178,27 @@ def model_evaluation(model, x_test, y_test):
     score = model.evaluate(x_test, y_test)
     print('Test Loss: ', score[0])
     print('Test Accuracy ', score[1])
+    return
+
+def plot_acc_loss(history):
+    # Plot the loss function
+    plt.plot(history.history['accuracy'])
+    plt.plot(history.history['val_accuracy'])
+    plt.title('model accuracy')
+    plt.ylabel('accuracy')
+    plt.xlabel('epoch')
+    plt.legend(['Train', 'Validation'], loc='upper left')
+    plt.show()
+    plt.savefig('accuracy_plot.png')
+    # summarize history for loss
+    plt.plot(history.history['loss'])
+    plt.plot(history.history['val_loss'])
+    plt.title('model loss')
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.legend(['Train', 'Validation'], loc='upper left')
+    plt.show()
+    plt.savefig('loss_plot.png')
     return
 
 
@@ -226,7 +250,9 @@ def main():
     model = model_compilation(model)
     my_tensorboard = create_tensorboard()
     model_history = model_training(model, my_tensorboard, x_train, y_train, x_test, y_test)
+    print(model_history.history.keys())
     model_evaluation(model, x_test, y_test)
+    plot_acc_loss(model_history)
 
 
 if __name__ == '__main__':
