@@ -15,6 +15,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from data_structure import folders, files
 
+
 # ___________________________________________________global variables__________________________________________
 global x_train, y_train, x_test, y_test, x_pred
 # define image size
@@ -85,7 +86,7 @@ def data_array_shape(x_train, y_train, x_test, y_test, x_pred):
 
 
 # convolutional neural network architecture
-def cnn_architecture():
+def cnn_architecture(hp):
     # network architecture
     model = Sequential()
     # input shape of images
@@ -113,12 +114,12 @@ def cnn_architecture():
 
     # model layers
     # conv_block c1
-    model.add(Conv2D(set_filters_c1, kernel_size=set_kernel_c1,
+    model.add(Conv2D(hp.Int("input_units", min_value=32, max_value=256, step=32), kernel_size=set_kernel_c1,
                      activation=set_actfunc_c1,
                      input_shape=set_input_shape))
     model.add(MaxPooling2D(pool_size=set_poolsize_c1))
-    model.add(BatchNormalization())
     # conv_block c2
+    for i in range(hp.Int("n_layers"))
     model.add(Conv2D(set_filters_c2, kernel_size=set_kernel_c2,
                      activation=set_actfunc_c2))
     model.add(MaxPooling2D(set_poolsize_c2))
