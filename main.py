@@ -14,6 +14,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from data_structure import folders, files
+import optimization
 
 
 # ___________________________________________________global variables__________________________________________
@@ -119,14 +120,14 @@ def cnn_architecture(hp):
                      input_shape=set_input_shape))
     model.add(MaxPooling2D(pool_size=set_poolsize_c1))
     # conv_block c2
-    for i in range(hp.Int("n_layers"))
-    model.add(Conv2D(set_filters_c2, kernel_size=set_kernel_c2,
+    for i in range(hp.Int("n_layers", 1, 4)):
+        model.add(Conv2D(hp.Int(f"_{i}_units ", min_value=32, max_value = 256, step=32), kernel_size=set_kernel_c2,
                      activation=set_actfunc_c2))
     model.add(MaxPooling2D(set_poolsize_c2))
-    model.add(Dropout(set_dropout))
-    # model.add(BatchNormalization())
+        # model.add(Dropout(set_dropout))
+        # model.add(BatchNormalization())
 
-    # flatten
+    # Neural network nodes
     model.add(Flatten())
     model.add(Dense(set_units_d1, set_actfunc_d1, name='features'))
     model.add(BatchNormalization())
@@ -247,6 +248,7 @@ def main():
         print('Setup x_pred failed!')
     x_train, y_train, x_test, y_test, x_pred = data_array_shape(x_train, y_train, x_test, y_test, x_pred)
     model = cnn_architecture()
+    optimization.optimizer(model, x_train, y_train, x_test, y_test)
     model.summary()
     model = model_compilation(model)
     my_tensorboard = create_tensorboard()
